@@ -5,7 +5,6 @@ import {format} from "timeago.js";
 
 export default function WidgetLg() {
     const [orders, setOrders] = useState([]);
-    console.log(orders, '1')
 
     useEffect(() => {
         const getOrders = async () => {
@@ -36,7 +35,7 @@ export default function WidgetLg() {
                 </tbody>
                 {orders.map(order => (
 
-                    <tbody>
+                    <tbody key={order._id}>
                     <tr className="widgetLgTr">
                         <td className="widgetLgUser">
                             <span className="widgetLgName">{order.userId}</span>
