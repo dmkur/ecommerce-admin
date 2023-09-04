@@ -8,10 +8,10 @@ const axiosService = axios.create({
     baseURL
 });
 
-const userRequest = axios.create({
+const axiosServiceWithToken = axios.create({
     baseURL,
     headers: {Authorization: TOKEN}
 });
 
 
-export {axiosService, userRequest}
+export {axiosService, axiosServiceWithToken}
