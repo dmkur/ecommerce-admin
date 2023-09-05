@@ -4,6 +4,7 @@ const urls = {
     usersStats: '/users/stats',
     products: '/products',
     orders:"/orders",
+    ordersIncome:"/orders/income",
     payment:"/checkout/payment",
     auth:"/auth/login",
 }

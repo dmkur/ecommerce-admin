@@ -9,7 +9,7 @@ import {userService} from "../../services";
 
 export default function Home() {
     const [userStats, setUserStats] = useState([]);
-    console.log(userStats, '1212')
+
     const MONTHS = useMemo(
         () => [
             "Jan",
