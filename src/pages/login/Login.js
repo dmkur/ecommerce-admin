@@ -2,15 +2,18 @@ import {useState} from "react";
 import {useDispatch} from "react-redux";
 
 import {authActions} from "../../redux";
+import {useHistory} from "react-router-dom";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const handleClick = (e) => {
         e.preventDefault();
-        dispatch(authActions.login({username, password}))
+        const {error} = dispatch(authActions.login({username, password}));
+        if(!error) history.push('/')
     };
 
     return (
