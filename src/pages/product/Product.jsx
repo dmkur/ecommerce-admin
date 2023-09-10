@@ -1,15 +1,51 @@
 import {Link, useLocation} from "react-router-dom";
 import "./product.css";
 import Chart from "../../components/chart/Chart"
-import {productData} from "../../dummyData"
 import {Publish} from "@material-ui/icons";
 import {useSelector} from "react-redux";
+import {useEffect, useMemo, useState} from "react";
+import {orderService} from "../../services";
 
 export default function Product() {
     const location = useLocation();
     const productId = location.pathname.split('/')[2]
     const product = useSelector(state => state.productReducer.products.filter(item => item._id === productId));
+    const [pStats, setPStats] = useState([]);
     console.log(product)
+    console.log(pStats)
+
+    const MONTHS = useMemo(
+        () => [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Agu",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ],
+        []
+    );
+
+    useEffect(() => {
+        const getOrderStats = async () => {
+            try {
+                const res = await orderService.getOrdersStats(productId)
+                const data = res.data.sort((a, b) => a._id - b._id)
+                data.map((item) =>
+                    setPStats((prev) => [...prev, {name: MONTHS[item._id - 1], Sales: item.total}]))
+
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        getOrderStats()
+    }, [productId, MONTHS])
 
     return (
         <div className="product">
@@ -21,7 +57,7 @@ export default function Product() {
             </div>
             <div className="productTop">
                 <div className="productTopLeft">
-                    <Chart data={productData} dataKey="Sales" title="Sales Performance"/>
+                    <Chart data={pStats} dataKey="Sales" title="Sales Performance"/>
                 </div>
                 <div className="productTopRight">
                     <div className="productInfoTop">
@@ -53,7 +89,7 @@ export default function Product() {
                         <input type="text" placeholder={product[0].title}/>
                         <label>Price</label>
                         <input type="text" placeholder={product[0].price}/>
-                        <label>Desc</label>
+                        <label>Product Desc</label>
                         <input type="text" placeholder={product[0].desc}/>
 
                         <label>In Stock</label>

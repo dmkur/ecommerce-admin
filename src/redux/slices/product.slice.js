@@ -7,11 +7,35 @@ const initialState = {
     error: null
 }
 
+const createProduct = createAsyncThunk(
+    'productSlice/createProduct',
+    async (newProduct, {rejectWithValue}) => {
+        try {
+            const {data} = await productService.cerate(newProduct);
+            return data
+        } catch (e) {
+            return rejectWithValue(e.response.data)
+        }
+    }
+)
+
 const getAllProducts = createAsyncThunk(
     'productSlice/getAllProducts',
     async (_, {rejectWithValue}) => {
         try {
             const {data} = await productService.getAllProducts();
+            return data
+        } catch (e) {
+            return rejectWithValue(e.response.data)
+        }
+    }
+)
+
+const updateProductById = createAsyncThunk(
+    'productSlice/updateProductById',
+    async (id, {rejectWithValue}) => {
+        try {
+            const {data} = await productService.updateById(id);
             return data
         } catch (e) {
             return rejectWithValue(e.response.data)
@@ -37,11 +61,27 @@ const productSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(createProduct.fulfilled, (state, action) => {
+                state.products.push(action.payload)
+                state.isFetching = false
+            })
+            .addCase(createProduct.pending, (state) => {
+                state.isFetching = true
+            })
             .addCase(getAllProducts.fulfilled, (state, action) => {
                 state.products = action.payload
                 state.isFetching = false
             })
             .addCase(getAllProducts.pending, (state) => {
+                state.isFetching = true
+            })
+            .addCase(updateProductById.fulfilled, (state, action) => {
+                const index = state.products.findIndex(item => item._id === action.payload._id);
+                state.products[index] = action.payload
+
+                state.isFetching = false
+            })
+            .addCase(updateProductById.pending, (state) => {
                 state.isFetching = true
             })
             .addCase(deleteProductById.fulfilled, (state, action) => {
@@ -71,7 +111,9 @@ const {reducer: productReducer} = productSlice;
 
 const productActions = {
     getAllProducts,
-    deleteProductById
+    deleteProductById,
+    createProduct,
+    updateProductById
 }
 
 
