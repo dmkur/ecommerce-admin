@@ -7,12 +7,13 @@ import {useEffect, useMemo, useState} from "react";
 import {orderService} from "../../services";
 
 export default function Product() {
+    const [inputs, setInputs] = useState({});
+    console.log(inputs, "INPUTS")
+
     const location = useLocation();
     const productId = location.pathname.split('/')[2]
     const product = useSelector(state => state.productReducer.products.filter(item => item._id === productId));
     const [pStats, setPStats] = useState([]);
-    console.log(product)
-    console.log(pStats)
 
     const MONTHS = useMemo(
         () => [
@@ -46,6 +47,16 @@ export default function Product() {
         }
         getOrderStats()
     }, [productId, MONTHS])
+
+    const handleClick = () => {
+
+    }
+
+    const handleChange = (e) => {
+        setInputs(prev => {
+            return {...prev, [e.target.name]:e.target.value}
+        } )
+    }
 
     return (
         <div className="product">
@@ -86,14 +97,14 @@ export default function Product() {
                 <form className="productForm">
                     <div className="productFormLeft">
                         <label>Product Name</label>
-                        <input type="text" placeholder={product[0].title}/>
+                        <input type="text" placeholder={product[0].title} name={"title"} onChange={handleChange}/>
                         <label>Price</label>
-                        <input type="text" placeholder={product[0].price}/>
+                        <input type="text" placeholder={product[0].price} name={"price"} onChange={handleChange}/>
                         <label>Product Desc</label>
-                        <input type="text" placeholder={product[0].desc}/>
+                        <input type="text" placeholder={product[0].desc} name={"desc"} onChange={handleChange}/>
 
                         <label>In Stock</label>
-                        <select name="inStock" id="idStock">
+                        <select name="inStock" id="idStock"  onChange={handleChange}>
                             <option value="true">Yes</option>
                             <option value="false">No</option>
                         </select>
@@ -109,7 +120,7 @@ export default function Product() {
                             </label>
                             <input type="file" id="file" style={{display: "none"}}/>
                         </div>
-                        <button className="productButton">Update</button>
+                        <button className="productButton" onClick={handleClick}>Update</button>
                     </div>
                 </form>
             </div>

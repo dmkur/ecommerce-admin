@@ -9,13 +9,15 @@ export default function NewProduct() {
     const [input, setInput] = useState({});
     const [file, setFile] = useState(null);
     const [cat, setCat] = useState([]);
+    const [color, setColor] = useState([]);
     const dispatch = useDispatch();
     console.log(input)
-    console.log(cat, '/')
+    // console.log(color, '/')
+    // console.log(cat, '/')
 
 
     const handleChange = (e) => {
-
+        console.log(e)
         setInput(prev => {
             return {...prev, [e.target.name]: e.target.value}
         })
@@ -56,8 +58,8 @@ export default function NewProduct() {
                 // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     const newProduct = {...input, img: downloadURL, categories: cat}
-                    console.log(newProduct)
-                    dispatch(productActions.createProduct(newProduct))
+                    console.log(newProduct, "NEWPROD")
+                    // dispatch(productActions.createProduct(newProduct))
                 });
             }
         );
@@ -82,6 +84,10 @@ export default function NewProduct() {
                 <div className="addProductItem">
                     <label>Categories</label>
                     <input type="text" placeholder="jeans, skirts" name={"cat"} onChange={handleCatagories}/>
+                </div>
+                <div className="addProductItem">
+                    <label>Color</label>
+                    <input type="text" placeholder="White" name={"color"} onChange={handleChange}/>
                 </div>
                 <div className="addProductItem">
                     <label>Price</label>
