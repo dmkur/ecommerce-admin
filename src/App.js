@@ -12,7 +12,10 @@ import NewProduct from "./pages/newProduct/NewProduct";
 import {Login} from "./pages/login/Login";
 
 function App() {
-    const admin = JSON.parse(JSON.parse(localStorage.getItem("persist:root")).authReducer).currentUser.isAdmin;
+
+    const user =JSON.parse(localStorage.getItem("persist:root"))?.authReducer
+    const currentUser =user && JSON.parse(user).currentUser
+    const admin = currentUser?.isAdmin
 
     return (
         <Router>

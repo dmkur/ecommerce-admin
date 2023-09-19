@@ -1,8 +1,9 @@
 import axios from "axios";
 import {baseURL} from "../constants";
 
-const TOKEN = JSON.parse(JSON.parse(localStorage.getItem("persist:root")).authReducer).currentUser.accessToken;
-// console.log(JSON.parse(JSON.parse(localStorage.getItem("persist:root")).authReducer).currentUser.accessToken)
+const user =JSON.parse(localStorage.getItem("persist:root"))?.authReducer
+const currentUser =user && JSON.parse(user).currentUser
+const TOKEN = currentUser?.accessToken
 
 const axiosService = axios.create({
     baseURL

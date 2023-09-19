@@ -17,7 +17,6 @@ export default function NewProduct() {
 
 
     const handleChange = (e) => {
-        console.log(e)
         setInput(prev => {
             return {...prev, [e.target.name]: e.target.value}
         })
@@ -58,8 +57,7 @@ export default function NewProduct() {
                 // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     const newProduct = {...input, img: downloadURL, categories: cat}
-                    console.log(newProduct, "NEWPROD")
-                    // dispatch(productActions.createProduct(newProduct))
+                    dispatch(productActions.createProduct(newProduct))
                 });
             }
         );
