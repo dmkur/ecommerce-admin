@@ -10,20 +10,27 @@ import ProductList from "./pages/productList/ProductList";
 import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
 import {Login} from "./pages/login/Login";
+import {useSelector} from "react-redux";
+
+
+
+
 
 function App() {
 
-    const user =JSON.parse(localStorage.getItem("persist:root"))?.authReducer
-    const currentUser =user && JSON.parse(user).currentUser
-    const admin = currentUser?.isAdmin
+
+    // const user =JSON.parse(localStorage.getItem("persist:root"))?.authReducer
+    // const currentUser =user && JSON.parse(user).currentUser
+    // const admin = currentUser?.isAdmin
+    // const {isAdmin} = useSelector(state => state.authReducer.currentUser)
 
     return (
         <Router>
             <Switch>
                 <Route path="/login">
-                    <Login/>
+                     <Login/>
                 </Route>
-                {admin && (<>
+                <>
                     <Topbar/>
                     <div className="container">
                         <Sidebar/>
@@ -49,7 +56,7 @@ function App() {
                             <NewProduct/>
                         </Route>
                     </div>
-                </>)}
+                </>
             </Switch>
         </Router>
     );

@@ -6,7 +6,8 @@ import {orderService} from "../../services";
 export default function FeaturedInfo() {
     const [income, setIncome] = useState([]);
     const [perc, setPerc] = useState(0);
-
+    console.log(income)
+    console.log(perc)
 
     useEffect(() => {
         const getIncome = async () => {

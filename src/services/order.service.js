@@ -3,7 +3,7 @@ import {urls} from "../constants";
 
 const orderService = {
     getOrders:() => axiosServiceWithToken.get(urls.orders),
-    getOrdersStats:(pid) => axiosServiceWithToken.get(urls.ordersIncome+`?pid=${pid}`),
+    getOrdersStats:() => axiosServiceWithToken.get(urls.ordersIncome),
 }
 
 export {orderService}

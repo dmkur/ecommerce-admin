@@ -1,7 +1,7 @@
 import "./widgetLg.css";
 import {useEffect, useState} from "react";
 import {orderService} from "../../services";
-import {format} from "timeago.js";
+import moment from "moment"
 
 export default function WidgetLg() {
     const [orders, setOrders] = useState([]);
@@ -40,7 +40,8 @@ export default function WidgetLg() {
                         <td className="widgetLgUser">
                             <span className="widgetLgName">{order.userId}</span>
                         </td>
-                        <td className="widgetLgDate">{format(order.createdAt)}</td>
+                        <td className="widgetLgDate">{ moment().from(order.createdAt)}</td>
+
                         <td className="widgetLgAmount">{order.amount}</td>
                         <td className="widgetLgStatus">
                             <Button type={order.status}/>

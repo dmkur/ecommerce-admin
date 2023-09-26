@@ -13,7 +13,8 @@ const Login = () => {
     const handleClick = (e) => {
         e.preventDefault();
         const {error} = dispatch(authActions.login({username, password}));
-        if(!error) history.push('/')
+
+        if (!error) history.push('/')
     };
 
     return (
