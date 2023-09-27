@@ -1,6 +1,6 @@
 import "./newUser.css";
 
-export default function NewUser() {
+const NewUser =()=> {
   return (
     <div className="newUser">
       <h1 className="newUserTitle">New User</h1>
@@ -52,3 +52,4 @@ export default function NewUser() {
     </div>
   );
 }
+export {NewUser}

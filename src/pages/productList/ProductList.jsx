@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {productActions} from "../../redux";
 
 
-export default function ProductList() {
+const ProductList=()=> {
 
     const {products} = useSelector(state => state.productReducer);
     const dispatch = useDispatch();
@@ -77,3 +77,4 @@ export default function ProductList() {
         </div>
     );
 }
+export {ProductList}
