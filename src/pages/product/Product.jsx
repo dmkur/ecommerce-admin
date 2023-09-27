@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import "./product.css";
 import { Chart } from "../../components";
-import { Publish } from "@material-ui/icons";
+import { Publish } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
 import { orderService } from "../../services";
