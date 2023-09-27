@@ -14,11 +14,8 @@ const NewProduct = () => {
   const [input, setInput] = useState({});
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState([]);
-  const [color, setColor] = useState([]);
   const dispatch = useDispatch();
-  console.log(input);
-  // console.log(color, '/')
-  // console.log(cat, '/')
+
 
   const handleChange = (e) => {
     setInput((prev) => {
@@ -129,7 +126,6 @@ const NewProduct = () => {
         <div className="addProductItem">
           <label>In Stock</label>
           <select
-            name="active"
             id="active"
             name={"inStock"}
             onChange={handleChange}
