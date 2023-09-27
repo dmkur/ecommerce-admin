@@ -1,5 +1,5 @@
 import "./productList.css";
-import {DataGrid} from "@material-ui/data-grid";
+import { DataGrid } from '@mui/x-data-grid';
 import {DeleteOutline} from "@mui/icons-material";
 
 import {Link} from "react-router-dom";
@@ -8,16 +8,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {productActions} from "../../redux";
 
 
-const ProductList=()=> {
+const ProductList = () => {
 
     const {products} = useSelector(state => state.productReducer);
     const dispatch = useDispatch();
 
-    console.log(products)
-
     useEffect(() => {
-            dispatch(productActions.getAllProducts());
-    },[])
+        dispatch(productActions.getAllProducts());
+    }, [])
 
     const handleDelete = (id) => {
         dispatch(productActions.deleteProductById(id))
@@ -25,10 +23,7 @@ const ProductList=()=> {
 
     const columns = [
         {field: "_id", headerName: "ID", width: 220},
-        {
-            field: "product",
-            headerName: "Product",
-            width: 200,
+        {field: "product", headerName: "Product", width: 200,
             renderCell: (params) => {
                 return (
                     <div className="productListItem">
@@ -39,15 +34,9 @@ const ProductList=()=> {
             },
         },
         {field: "inStock", headerName: "Stock", width: 200},
+        {field: "price", headerName: "Price", width: 120},
         {
-            field: "price",
-            headerName: "Price",
-            width: 160,
-        },
-        {
-            field: "action",
-            headerName: "Action",
-            width: 150,
+            field: "action", headerName: "Action", width: 150,
             renderCell: (params) => {
                 return (
                     <>
@@ -70,7 +59,7 @@ const ProductList=()=> {
                 rows={products}
                 disableSelectionOnClick
                 columns={columns}
-                getRowId={row=>row._id}
+                getRowId={row => row._id}
                 pageSize={8}
                 checkboxSelection
             />
