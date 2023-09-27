@@ -1,6 +1,4 @@
-import "./App.css";
-import {Sidebar, Topbar} from "./components";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import {
   Login,
   Home,
@@ -11,43 +9,23 @@ import {
   User,
   UserList,
 } from "./pages";
+import { MainLayout } from "./layouts/MainLayout";
 
 const App = () => {
   return (
-    <Router>
-      <Switch>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <>
-          <Topbar />
-          <div className="container">
-            <Sidebar />
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route path="/users">
-              <UserList />
-            </Route>
-            <Route path="/user/:userId">
-              <User />
-            </Route>
-            <Route path="/newUser">
-              <NewUser />
-            </Route>
-            <Route path="/products">
-              <ProductList />
-            </Route>
-            <Route path="/product/:productId">
-              <Product />
-            </Route>
-            <Route path="/newproduct">
-              <NewProduct />
-            </Route>
-          </div>
-        </>
-      </Switch>
-    </Router>
+    <Routes>
+      <Route path="" element={<MainLayout />}>
+        <Route index element={<Navigate to={"/home"} />} />
+        <Route path={"/home"} element={<Home />} />
+        <Route path={"/users"} element={<UserList />} />
+        <Route path={"/user/:userId"} element={<User />} />
+        <Route path={"/newUser"} element={<NewUser />} />
+        <Route path={"/products"} element={<ProductList />} />
+        <Route path={"/product/:productId"} element={<Product />} />
+        <Route path={"newproduct"} element={<NewProduct />} />
+      </Route>
+      <Route path={"/login"} element={<Login />} />
+    </Routes>
   );
 };
 
