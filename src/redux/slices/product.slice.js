@@ -34,9 +34,9 @@ const getAllProducts = createAsyncThunk(
 
 const updateProductById = createAsyncThunk(
     'productSlice/updateProductById',
-    async (id, {rejectWithValue}) => {
+    async ({id, dataForUpdate}, {rejectWithValue}) => {
         try {
-            const {data} = await productService.updateById(id);
+            const {data} = await productService.updateById(id, dataForUpdate);
             return data
         } catch (e) {
             return rejectWithValue(e.response.data)
