@@ -6,15 +6,19 @@ import { orderService } from "../../services";
 const FeaturedInfo = () => {
   const [income, setIncome] = useState([]);
   const [perc, setPerc] = useState(0);
-  console.log(income);
-  console.log(perc);
 
   useEffect(() => {
     const getIncome = async () => {
       try {
-        const { data } = await orderService.getOrdersStats();
-        setIncome(data);
-        setPerc((data[1].total * 100) / data[1].total - 100);
+        const { data } = await orderService.getOrdersStats();        
+        setIncome(data.sort((a,b)=>a._id-b._id));
+        const a = data[0].total;
+        const b = data[1].total;
+        if (a > b) {
+          setPerc(((a - b) / a) * 100);
+        } else {
+          setPerc(((b - a) / a) * 100);
+        }
       } catch (e) {}
     };
     getIncome();
@@ -25,11 +29,11 @@ const FeaturedInfo = () => {
       <div className="featuredItem">
         <span className="featuredTitle">Revanue</span>
         <div className="featuredMoneyContainer">
-          <span className="featuredMoney">${income[1]?.total}</span>
+          <span className="featuredMoney">$ {income[1]?.total}</span>
           <span className="featuredMoneyRate">
             % {Math.floor(perc)}
-            {perc < 0 ? (
-              <ArrowDownward className="featuredIcon negative" />
+            {(perc > 0) ? (
+              <ArrowUpward className="featuredIcon" />
             ) : (
               <ArrowDownward className="featuredIcon negative" />
             )}

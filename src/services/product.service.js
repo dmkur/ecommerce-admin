@@ -6,7 +6,7 @@ const productService = {
     getAllProducts:(params={}) => axiosServiceWithToken.get(urls.products, {params:{category:params}}),
     getProductById:(id) => axiosServiceWithToken.get(urls.products+`/find/${id}` ),
     deleteById:(id) => axiosServiceWithToken.delete(urls.products+`/${id}` ),
-    updateById:(id, newProduct) => axiosServiceWithToken.put(urls.products+`/${id}`, newProduct)
+    updateById:(id, dataForUpdate) => axiosServiceWithToken.put(urls.products+`/${id}`, dataForUpdate)
 }
 
 export {productService}

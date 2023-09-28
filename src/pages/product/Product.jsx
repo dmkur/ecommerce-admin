@@ -1,14 +1,17 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import "./product.css";
 import { Chart } from "../../components";
 import { Publish } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
 import { orderService } from "../../services";
+import { productActions } from "../../redux/slices/product.slice";
 
 const Product = () => {
   const [inputs, setInputs] = useState({});
-  console.log(inputs, "INPUTS");
+  const dispatch = useDispatch()
+  const params = useParams()
+  console.log(params, "PARAMS");
 
   const location = useLocation();
   const productId = location.pathname.split("/")[2];
@@ -53,7 +56,12 @@ const Product = () => {
     getOrderStats();
   }, [productId, MONTHS]);
 
-  const handleClick = () => {};
+  const handleClick = (e) => {
+    e.preventDefault()
+    // console.log(inputs, "INPUTS");
+    dispatch(productActions.updateProductById({id:productId, dataForUpdate: inputs}))
+    
+  };
 
   const handleChange = (e) => {
     setInputs((prev) => {
