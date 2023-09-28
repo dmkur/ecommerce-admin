@@ -10,8 +10,8 @@ const FeaturedInfo = () => {
   useEffect(() => {
     const getIncome = async () => {
       try {
-        const { data } = await orderService.getOrdersStats();
-        setIncome(data);
+        const { data } = await orderService.getOrdersStats();        
+        setIncome(data.sort((a,b)=>a._id-b._id));
         const a = data[0].total;
         const b = data[1].total;
         if (a > b) {
