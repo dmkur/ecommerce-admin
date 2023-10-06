@@ -25,6 +25,36 @@
 .topRight {
   display: flex;
   align-items: center;
+  position:relative
+}
+.drop-down ul {
+  padding:0
+}
+
+.drop-down {
+  position: absolute;
+  top: 45px;
+  right: 20px;
+  border: 1px solid #cccccc;
+
+  /* transition: all ease-in-out 0.5s */
+}
+.drop-down li {
+  list-style: none;
+  padding: 5px 0px;
+
+  border-radius: 5px; 
+  width: 100px;
+  text-align: center;
+  background: white;
+  cursor: pointer;
+}
+.drop-down a {
+  text-decoration: none;
+  color: black;
+}
+.drop-down li:hover{
+
 }
 
 .topbarIconContainer {
@@ -33,9 +63,9 @@
   margin-right: 10px;
   color: #555;
 }
-.topbarIconContainer a {
+.topbarIconContainer,.topLeft a {
   text-decoration: none;
-  color: #555
+  color: #555;
 }
 
 .topIconBadge {
