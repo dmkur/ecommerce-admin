@@ -2,10 +2,11 @@ import "./home.css";
 import { WidgetLg, WidgetSm, FeaturedInfo, Chart } from "../../components";
 import { useEffect, useMemo, useState } from "react";
 import { userService } from "../../services";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  const {currentUser} = useSelector(state=>state.authReducer);
   const [userStats, setUserStats] = useState([]);
-  console.log(userStats, "STATS");
   const MONTHS = useMemo(
     () => [
       "Jan",
@@ -41,7 +42,7 @@ const Home = () => {
       } catch (e) {}
     };
     getStats();
-  }, [MONTHS]);
+  }, [MONTHS,currentUser]);
 
   return (
     <div className="home">
