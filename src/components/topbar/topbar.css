@@ -27,17 +27,16 @@
   align-items: center;
   position:relative
 }
-.drop-down ul {
-  padding:0
-}
+
 
 .drop-down {
   position: absolute;
   top: 45px;
   right: 20px;
   border: 1px solid #cccccc;
+  padding:0px;
+  border-radius: 5px;
 
-  /* transition: all ease-in-out 0.5s */
 }
 .drop-down li {
   list-style: none;
@@ -48,13 +47,16 @@
   text-align: center;
   background: white;
   cursor: pointer;
+  transition: all ease-in-out 0.2s
 }
 .drop-down a {
   text-decoration: none;
   color: black;
 }
-.drop-down li:hover{
 
+.drop-down li:hover{
+  scale: 1.1;
+  border: 1px solid black
 }
 
 .topbarIconContainer {
