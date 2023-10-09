@@ -12,7 +12,7 @@ const root = createRoot(rootElement);
 root.render(
   <PersistGate loading={null} persistor={persistor}>
     <Provider store={store}>
-      <BrowserRouter >
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <App />
       </BrowserRouter>
     </Provider>
