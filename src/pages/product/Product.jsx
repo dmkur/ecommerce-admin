@@ -9,9 +9,9 @@ import { productActions } from "../../redux/slices/product.slice";
 
 const Product = () => {
   const [inputs, setInputs] = useState({});
+  console.log(inputs);
   const dispatch = useDispatch()
   const params = useParams()
-  console.log(params, "PARAMS");
 
   const location = useLocation();
   const productId = location.pathname.split("/")[2];
@@ -58,8 +58,8 @@ const Product = () => {
 
   const handleClick = (e) => {
     e.preventDefault()
-    // console.log(inputs, "INPUTS");
-    dispatch(productActions.updateProductById({id:productId, dataForUpdate: inputs}))
+    console.log(inputs, "INPUTS");
+    // dispatch(productActions.updateProductById({id:productId, dataForUpdate: inputs}))
     
   };
 
@@ -138,7 +138,7 @@ const Product = () => {
           <div className="productFormRight">
             <div className="productUpload">
               <img src={product[0].img} alt="" className="productUploadImg" />
-              <label for="file">
+              <label htmlFor="file">
                 <Publish />
               </label>
               <input type="file" id="file" style={{ display: "none" }} />

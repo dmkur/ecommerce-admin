@@ -5,9 +5,11 @@ import { useSelector } from "react-redux";
 
 const MainLayout = () => {
   const {currentUser} = useSelector(state=>state.authReducer)   
+  const user =  currentUser && currentUser.isAdmin
 
-  const ProtectedRoute = ({children}) => {    
-    if(!currentUser) return <Navigate to={'/login'}/>    
+
+  const ProtectedRoute = ({children}) => {     
+    if(!user) return <Navigate to={'/login'}/>    
 
     return children
   }
