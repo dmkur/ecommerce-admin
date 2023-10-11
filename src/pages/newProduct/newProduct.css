@@ -3,7 +3,7 @@
 }
 
 .addProductForm {
-  margin-top: 10px;
+  margin: 10px;
 }
 
 .addProductItem {
@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
+  position: relative;
 }
 
 .addProductItem > label {
@@ -36,4 +37,18 @@
   color: white;
   font-weight: 600;
   cursor: pointer;
+}
+
+.imgStyle {
+  position: absolute;
+  top: 0;
+  right: -250px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.imgStyle img{
+  width: 150px;
+  object-fit: cover;
 }

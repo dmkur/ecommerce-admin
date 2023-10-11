@@ -12,10 +12,14 @@ import { useDispatch } from "react-redux";
 
 const NewProduct = () => {
   const [input, setInput] = useState({});
-  const [file, setFile] = useState(null);
-  const [cat, setCat] = useState([]);
-  const dispatch = useDispatch();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState("");
 
+  const [file, setFile] = useState(null);
+  console.log(file);
+  const [cat, setCat] = useState([]);
+  // console.log(cat);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setInput((prev) => {
@@ -59,11 +63,20 @@ const NewProduct = () => {
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          const newProduct = { ...input, img: downloadURL, categories: cat };
+          const newProduct = { ...input, img: downloadURL, categories: cat };          
           dispatch(productActions.createProduct(newProduct));
         });
       },
     );
+  
+        
+  };
+
+  const setUpImg = (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+    setSelectedImage(file);
+    setPreviewImage(URL.createObjectURL(file));
   };
 
   return (
@@ -71,12 +84,17 @@ const NewProduct = () => {
       <h1 className="addProductTitle">New Product</h1>
       <form className="addProductForm">
         <div className="addProductItem">
+         <div > 
           <label>Image</label>
           <input
             type="file"
-            id="file"
-            onChange={(e) => setFile(e.target.files[0])}
+            id="file"            
+            onChange={setUpImg}
           />
+          </div>
+          <div className="imgStyle">           
+            {previewImage && <img src={previewImage} alt="Selected"/>}
+          </div>
         </div>
         <div className="addProductItem">
           <label>Title</label>
@@ -125,11 +143,7 @@ const NewProduct = () => {
         </div>
         <div className="addProductItem">
           <label>In Stock</label>
-          <select
-            id="active"
-            name={"inStock"}
-            onChange={handleChange}
-          >
+          <select id="active" name={"inStock"} onChange={handleChange}>
             <option value="true">Yes</option>
             <option value="false">No</option>
           </select>

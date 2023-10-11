@@ -9,7 +9,6 @@ import {productActions} from "../../redux";
 
 
 const ProductList = () => {
-
     const {products} = useSelector(state => state.productReducer);
     const dispatch = useDispatch();
 
@@ -55,6 +54,9 @@ const ProductList = () => {
 
     return (
         <div className="productList">
+            <Link to="/newproduct" >
+          <button className="productAddButton">Create</button>
+        </Link>
             <DataGrid
                 rows={products}
                 disableSelectionOnClick

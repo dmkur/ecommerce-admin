@@ -6,7 +6,10 @@ import { useSelector } from "react-redux";
 
 const Home = () => {
   const {currentUser} = useSelector(state=>state.authReducer);
+  const user = currentUser && currentUser.accessToken
+
   const [userStats, setUserStats] = useState([]);
+
   const MONTHS = useMemo(
     () => [
       "Jan",
@@ -26,11 +29,9 @@ const Home = () => {
   );
   useEffect(() => {
     const getStats = async () => {
+      console.log("START USEEFFECT");
       try {
-        const { data } = await userService.getUsersStats();
-        // console.log(data,"DATA");
-        // // data.sort((a,b)=>a._id - b._id)
-        console.log(data, "DATA1");
+        const { data } = await userService.getUsersStats();       
         data
           .sort((a, b) => a._id - b._id)
           .map((item) =>
@@ -42,7 +43,7 @@ const Home = () => {
       } catch (e) {}
     };
     getStats();
-  }, [MONTHS,currentUser]);
+  }, [MONTHS,user]);
 
   return (
     <div className="home">
