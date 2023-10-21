@@ -6,11 +6,19 @@ import {useSelector, useDispatch} from "react-redux";
 import {useEffect, useMemo, useState} from "react";
 import {orderService} from "../../services";
 import {productActions} from "../../redux";
+import {
+    getStorage,
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+} from "firebase/storage";
+import {app} from "../../fireBase";
 
 const Product = () => {
     const {isFetching} = useSelector(state => state.productReducer);
     const [inputs, setInputs] = useState({});
-    const [categories, setCategories] = useState([]);
+    const [additionalParams, setAdditionalParams] = useState([]);
+    const [file, setFile] = useState(null);
 
     const dispatch = useDispatch()
     const {productId} = useParams()
@@ -59,10 +67,43 @@ const Product = () => {
 
     const handleClick = (e) => {
         e.preventDefault()
-        let updatedProduct
-        categories.length > 0 ? updatedProduct={categories, ...inputs} : updatedProduct=inputs
-        // console.log(updatedProduct, "INPUTS2");
-        dispatch(productActions.updateProductById({id: productId, dataForUpdate: updatedProduct}))
+        const updatedObj = {...inputs, ...additionalParams}
+        dispatch(productActions.updateProductById({id: productId, dataForUpdate: updatedObj}))
+
+        // const fileName = new Date().getTime() + file.name;
+        // const storage = getStorage(app);
+        // const storageRef = ref(storage, fileName);
+        // const uploadTask = uploadBytesResumable(storageRef, file);
+        // uploadTask.on(
+        //     "state_changed",
+        //     (snapshot) => {
+        //         // Observe state change events such as progress, pause, and resume
+        //         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        //         const progress =
+        //             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        //         console.log("Upload is " + progress + "% done");
+        //         switch (snapshot.state) {
+        //             case "paused":
+        //                 console.log("Upload is paused");
+        //                 break;
+        //             case "running":
+        //                 console.log("Upload is running");
+        //                 break;
+        //             default:
+        //         }
+        //     },
+        //     (error) => {
+        //         // Handle unsuccessful uploads
+        //     },
+        //     () => {
+        //         // Handle successful uploads on complete
+        //         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        //             const newProduct = { ...input, img: downloadURL, categories: cat };
+        //             dispatch(productActions.createProduct(newProduct));
+        //         });
+        //     },
+        // );
     };
 
     const handleChange = (e) => {
@@ -72,8 +113,16 @@ const Product = () => {
     };
 
     const handleCategory = (e) => {
-        setCategories(e.target.value.split(","))
+
+        setAdditionalParams((prev) => {
+            const value = e.target.value.split(",")
+            return {...prev, [e.target.name]: value}
+        })
     }
+
+    const setImg = (e) => {
+        setFile(e.target.files[0]);
+    };
 
     return (
         <div className="product">
@@ -134,6 +183,13 @@ const Product = () => {
                             name={"color"}
                             onChange={handleChange}
                         />
+                        <label>Size</label>
+                        <input
+                            type="text"
+                            placeholder={product[0].size}
+                            name={"size"}
+                            onChange={handleCategory}
+                        />
                         <label>Product Desc</label>
                         <input
                             type="text"
@@ -161,7 +217,7 @@ const Product = () => {
                             <label htmlFor="file">
                                 <Publish/>
                             </label>
-                            <input type="file" id="file" style={{display: "none"}}/>
+                            <input type="file" id="file" style={{display: "none"}} onChange={setImg}/>
                         </div>
                         <button className="productButton" onClick={handleClick}>
                             Update

@@ -27,7 +27,7 @@ const NewProduct = () => {
     });
   };
 
-  const handleCatagories = (e) => {
+  const handleCategories = (e) => {
     setCat(e.target.value.split(","));
   };
 
@@ -92,9 +92,9 @@ const NewProduct = () => {
             onChange={setUpImg}
           />
           </div>
-          <div className="imgStyle">           
-            {previewImage && <img src={previewImage} alt="Selected"/>}
-          </div>
+          {previewImage && <div className="imgStyle">
+             <img src={previewImage} alt="Selected"/>
+          </div>}
         </div>
         <div className="addProductItem">
           <label>Title</label>
@@ -120,7 +120,7 @@ const NewProduct = () => {
             type="text"
             placeholder="jeans, skirts"
             name={"cat"}
-            onChange={handleCatagories}
+            onChange={handleCategories}
           />
         </div>
         <div className="addProductItem">
