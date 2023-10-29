@@ -6,7 +6,7 @@ const user =JSON.parse(localStorage.getItem("persist:root"))?.authReducer
 const currentUser = user && JSON.parse(user).currentUser
 // console.log(currentUser, "2");
 const TOKEN = currentUser?.accessToken
-// console.log(TOKEN, "3");
+
 
 const axiosService = axios.create({
     baseURL

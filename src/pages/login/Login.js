@@ -14,17 +14,14 @@ const Login = () => {
 
   const handleClick = async(e) => {
     e.preventDefault();
-    const { error:axiosError } =  dispatch(authActions.login({ username, password }));    
-    if (!axiosError) {      
-      navigate('/')
-    }
+    const { error:axiosError } =  dispatch(authActions.login({ username, password }));
   };
 
   useEffect(()=>{
-    if (currentUser) {      
+    if (currentUser) {
       navigate('/')
     }
-  },[isFetching, currentUser])
+  },[currentUser])
 
 
   if (isFetching) {
