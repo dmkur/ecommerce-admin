@@ -10,6 +10,7 @@ import {
   UserList,
 } from "./pages";
 import { MainLayout } from "./layouts/MainLayout";
+import { ProductForm } from "./components";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path={"/products"} element={<ProductList />} />
         <Route path={"/product/:productId"} element={<Product />} />
         <Route path={"newproduct"} element={<NewProduct />} />
+        <Route path={"test"} element={<ProductForm />} />
       </Route>
       <Route path={"/login"} element={<Login />} />
     </Routes>
