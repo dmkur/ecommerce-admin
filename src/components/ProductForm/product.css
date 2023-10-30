@@ -26,7 +26,8 @@
 }
 
 .productTopLeft,
-.productTopRight {
+.productTopRight,
+.productTopMiddle {
   flex: 1;
 }
 
@@ -78,26 +79,31 @@
 .productForm {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
-.productFormLeft {
+.productFormLeft,
+.productFormMiddle {
   display: flex;
   flex-direction: column;
 }
 
-.productFormLeft > label {
+.productFormLeft,
+.productFormMiddle > label {
   margin-bottom: 10px;
   color: gray;
 }
 
-.productFormLeft > input {
+.productFormLeft,
+.productFormMiddle > input {
   margin-bottom: 10px;
   border: none;
   padding: 5px;
   border-bottom: 1px solid gray;
 }
 
-.productFormLeft > select {
+.productFormLeft,
+.productFormMiddle > select {
   margin-bottom: 10px;
 }
 
@@ -121,6 +127,7 @@
 }
 
 .productButton {
+  margin-top:20px;
   border: none;
   padding: 5px;
   border-radius: 5px;
