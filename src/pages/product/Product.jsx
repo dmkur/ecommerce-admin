@@ -24,7 +24,7 @@ const Product = () => {
   );
 
   const [pStats, setPStats] = useState([]);
-  console.log(pStats,"STATS");
+
 
   const MONTHS = useMemo(
     () => [
