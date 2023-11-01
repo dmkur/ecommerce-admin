@@ -1,18 +1,11 @@
 import "./product.css";
 import { Link, useParams } from "react-router-dom";
 import { Chart, ProductForm } from "../../components";
-import { Publish } from "@mui/icons-material";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
 import { orderService } from "../../services";
 import { productActions } from "../../redux";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import { app } from "../../fireBase";
+
 
 const Product = () => {
   const { isFetching, productForUpdate } = useSelector((state) => state.productReducer);
@@ -22,9 +15,7 @@ const Product = () => {
   const product = useSelector((state) =>
     state.productReducer.products.filter((item) => item._id === productId),
   );
-
   const [pStats, setPStats] = useState([]);
-
 
   const MONTHS = useMemo(
     () => [
@@ -46,16 +37,14 @@ const Product = () => {
 
   useEffect(() => {
     if(productForUpdate) {      
-      dispatch(productActions.updateProductById({id:productId, dataForUpdate:productForUpdate}))  
-      
+      dispatch(productActions.updateProductById({id:productId, dataForUpdate:productForUpdate}))      
     } else {
-      const getOrderStats = async () => {
-        console.log("OOOPS");
+      const getOrderStats = async () => {       
         try {
-          const res = await orderService.getOrdersStats(productId);
-        
-          const data = res.data.sort((a, b) => a._id - b._id);
-         
+          // dispatch(orderActions.getOrderStats())
+          const res = await orderService.getOrdersStats({pid:productId});                
+          const data = res.data.sort((a, b) => a._id - b._id);       
+          // console.log(data,"LOL");    
           data.map((item) =>
             setPStats((prev) => [
               ...prev,
@@ -70,9 +59,11 @@ const Product = () => {
     }
 
     
-  }, [productId,productForUpdate]);
+  }, [productId, productForUpdate]);
 
-
+  const getProductData = (data)=>{
+    console.log(data, "data from child");
+  }
 
   return (
     <div className="product">
@@ -112,7 +103,7 @@ const Product = () => {
       {isFetching ? (
         <div>Loading...</div>
       ) : (
-        <ProductForm product={product[0]}/>
+        <ProductForm product={product[0]} getProductData={getProductData}/>
       )}
     </div>
   );

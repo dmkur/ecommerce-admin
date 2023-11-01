@@ -3,95 +3,99 @@ import { Publish } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { productActions } from "../../redux";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 
-const ProductForm = ({ product}) => {
- const dispatch = useDispatch()
-  const { register, handleSubmit, reset } = useForm();  
+const ProductForm = ({ product, getProductData}) => {
+  const [formData,setFormData]= useState({})
+  const dispatch = useDispatch();
+  const { register, handleSubmit, reset } = useForm();
 
-  const handleMainSubmit = (obj) => { 
-   const addParams= {}
+  const handleMainSubmit = (obj) => {
+    const addParams = {};
+    if (obj.picture[0] === undefined) delete obj.picture;
     for (const item in obj) {
       if (obj[item] === "") delete obj[item];
     }
-    if ("categories" in obj) {     
-      Object.assign(addParams, { categories: obj.categories.split(",") });   
+    if ("categories" in obj) {
+      Object.assign(addParams, { categories: obj.categories.split(",") });
       delete obj.categories;
     }
-
-    if ("size" in obj) {    
-      Object.assign(addParams, { size: obj.size.split(",") });   
+    if ("size" in obj) {
+      Object.assign(addParams, { size: obj.size.split(",") });
       delete obj.size;
-    }
- 
-    dispatch(productActions.setProductData({...obj, ...addParams}))
-    reset(); 
+    }  
+    // setFormData({ ...obj, ...addParams })
+    getProductData({ ...obj, ...addParams })
+    reset();
   };
 
+
+
   return (
-    <div className="product">
-      <div className="productBottom">
-        <form className="productForm" onSubmit={handleSubmit(handleMainSubmit)}>
-          <div className="productFormLeft">
-            <label>Product Name</label>
-            <input
-              type="text"
-              placeholder={product.title}
-              {...register("title")}
-            />
-            <label>Price</label>
-            <input
-              type="text"
-              placeholder={product.price}
-              {...register("price")}
-            />
-            <label>Color</label>
-            <input
-              type="text"
-              placeholder={product.color}
-              {...register("color")}
-            />
+    <div className="productWrapper">
+      <form className="productForm" onSubmit={handleSubmit(handleMainSubmit)}>
+        <div className="productFormLeft">
+          <label>Product Name</label>
+          <input
+            type="text"
+            placeholder={product.title}
+            {...register("title")}
+          />
+          <label>Price</label>
+          <input
+            type="text"
+            placeholder={product.price}
+            {...register("price")}
+          />
+          <label>Color</label>
+          <input
+            type="text"
+            placeholder={product.color}
+            {...register("color")}
+          />
 
-            <label>Product Desc</label>
-            <input
-              type="text"
-              placeholder={product.desc}
-              name={"desc"}
-              {...register("desc")}
-            />
+          <label>Product Desc</label>
+          <input
+            type="text"
+            placeholder={product.desc}
+            name={"desc"}
+            {...register("desc")}
+          />
 
-            <label>In Stock</label>
-            <select id="idStock" {...register("inStock")}>
-              <option value="">Choose option</option>
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-          <div className="productFormMiddle">
-            <label>Categories</label>
+          <label>In Stock</label>
+          <select id="idStock" {...register("inStock")}>
+            <option value="">Choose option</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <div className="productFormMiddle">
+          <label>Categories</label>
+          <input
+            type="text"
+            placeholder={product.categories}
+            {...register("categories")}
+          />
+          <label>Size</label>
+          <input type="text" placeholder={product.size} {...register("size")} />
+        </div>
+        <div className="productFormRight">
+          <div className="productUpload">
+            <img src={product.img} alt="" className="productUploadImg" />
+            <label htmlFor="file">
+              <Publish />
+            </label>
             <input
-              type="text"
-              placeholder={product.categories}
-              {...register("categories")}
-            />
-            <label>Size</label>
-            <input
-              type="text"
-              placeholder={product.size}
-              {...register("size")}
+              {...register("picture")}
+              type="file"
+              id="file"
+              style={{ display: "none" }}
             />
           </div>
-          <div className="productFormRight">
-            <div className="productUpload">
-              <img src={product.img} alt="" className="productUploadImg" />
-              <label htmlFor="file">
-                <Publish />
-              </label>
-              <input type="file" id="file" style={{ display: "none" }} />
-            </div>
-           <button className="productButton">Update</button>
-          </div>
-        </form>
-      </div>
+
+          <button className="productButton">Update</button>
+        </div>
+      </form>
     </div>
   );
 };
