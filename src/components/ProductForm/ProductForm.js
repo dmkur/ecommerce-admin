@@ -1,13 +1,9 @@
 import "./product.css";
 import { Publish } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
-import { productActions } from "../../redux";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+
 
 const ProductForm = ({ product, getProductData}) => {
-  const [formData,setFormData]= useState({})
-  const dispatch = useDispatch();
   const { register, handleSubmit, reset } = useForm();
 
   const handleMainSubmit = (obj) => {
@@ -23,13 +19,10 @@ const ProductForm = ({ product, getProductData}) => {
     if ("size" in obj) {
       Object.assign(addParams, { size: obj.size.split(",") });
       delete obj.size;
-    }  
-    // setFormData({ ...obj, ...addParams })
+    }   
     getProductData({ ...obj, ...addParams })
     reset();
   };
-
-
 
   return (
     <div className="productWrapper">

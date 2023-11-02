@@ -6,15 +6,14 @@ import { useEffect, useMemo, useState } from "react";
 import { orderService } from "../../services";
 import { productActions } from "../../redux";
 
-
 const Product = () => {
-  const { isFetching, productForUpdate } = useSelector((state) => state.productReducer);
-  const dispatch = useDispatch();
   const { productId } = useParams();
+  
+  const { isFetching, products} = useSelector((state) => state.productReducer);
+  const product = products.filter(item=> item._id === productId) 
 
-  const product = useSelector((state) =>
-    state.productReducer.products.filter((item) => item._id === productId),
-  );
+  const [productForUpdate, setProductForUpdate] = useState({});
+  const dispatch = useDispatch(); 
   const [pStats, setPStats] = useState([]);
 
   const MONTHS = useMemo(
@@ -36,34 +35,33 @@ const Product = () => {
   );
 
   useEffect(() => {
-    if(productForUpdate) {      
-      dispatch(productActions.updateProductById({id:productId, dataForUpdate:productForUpdate}))      
-    } else {
-      const getOrderStats = async () => {       
-        try {
-          // dispatch(orderActions.getOrderStats())
-          const res = await orderService.getOrdersStats({pid:productId});                
-          const data = res.data.sort((a, b) => a._id - b._id);       
-          // console.log(data,"LOL");    
-          data.map((item) =>
-            setPStats((prev) => [
-              ...prev,
-              { name: MONTHS[item._id - 1], Sales: item.total },
-            ]),
-          );
-        } catch (e) {
-          console.log(e);
-        }
-      };
-      getOrderStats();
-    }
+    const getOrderStats = async () => {
+      try {
+        // dispatch(orderActions.getOrderStats())
+        const res = await orderService.getOrdersStats(productId);
+        const data = res.data.sort((a, b) => a._id - b._id);
+        // console.log(data,"LOL");
+        data.map((item) =>
+          setPStats((prev) => [
+            ...prev,
+            { name: MONTHS[item._id - 1], Sales: item.total },
+          ]),
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getOrderStats();
+  }, [productId,MONTHS]);
 
-    
-  }, [productId, productForUpdate]);
+  useEffect(() => {   
+    dispatch(productActions.updateProductById({ productId, productForUpdate }));    
+  }, [productForUpdate]);
 
-  const getProductData = (data)=>{
-    console.log(data, "data from child");
-  }
+  const getProductData = (data) => {
+    // console.log(data, "data from child");
+    setProductForUpdate(data);
+  };
 
   return (
     <div className="product">
@@ -101,9 +99,9 @@ const Product = () => {
         </div>
       </div>
       {isFetching ? (
-        <div>Loading...</div>
+        <h3>Loading...</h3>
       ) : (
-        <ProductForm product={product[0]} getProductData={getProductData}/>
+        <ProductForm product={product[0]} getProductData={getProductData} />
       )}
     </div>
   );
