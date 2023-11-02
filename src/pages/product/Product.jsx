@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { Chart, ProductForm } from "../../components";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
-import { orderService } from "../../services";
+import { orderService, uploadPicture } from "../../services";
 import { productActions } from "../../redux";
 import {
   getStorage,
@@ -64,44 +64,45 @@ const Product = () => {
 
   useEffect(() => {
     if (picture) {
-      const fileName = new Date().getTime() + picture.name;
-      const storage = getStorage(app);
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, picture);
+      // const fileName = new Date().getTime() + picture.name;
+      // const storage = getStorage(app);
+      // const storageRef = ref(storage, fileName);
+      // const uploadTask = uploadBytesResumable(storageRef, picture);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          setIsPictureDownload(!isPictureDownload)
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-            default:
-          }
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            const newProduct = { ...productForUpdate, img: downloadURL};           
-            dispatch(productActions.updateProductById({ productId, productForUpdate:newProduct }));
-            setIsPictureDownload(!isPictureDownload)
-          });
-        },
-      );
-      
+      // uploadTask.on(
+      //   "state_changed",
+      //   (snapshot) => {
+      //     // Observe state change events such as progress, pause, and resume
+      //     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+      //     setIsPictureDownload(!isPictureDownload)
+      //     const progress =
+      //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      //     console.log("Upload is " + progress + "% done");
+      //     switch (snapshot.state) {
+      //       case "paused":
+      //         console.log("Upload is paused");
+      //         break;
+      //       case "running":
+      //         console.log("Upload is running");
+      //         break;
+      //       default:
+      //     }
+      //   },
+      //   (error) => {
+      //     // Handle unsuccessful uploads
+      //   },
+      //   () => {
+      //     // Handle successful uploads on complete
+      //     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+      //     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      //       const newProduct = { ...productForUpdate, img: downloadURL};           
+      //       dispatch(productActions.updateProductById({ productId, productForUpdate:newProduct }));
+      //       setIsPictureDownload(!isPictureDownload)
+      //     });
+      //   },
+      // );
+      uploadPicture(picture)
+    
     } else {
       dispatch(productActions.updateProductById({ productId, productForUpdate }));      
     }
