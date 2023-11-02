@@ -5,15 +5,25 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
 import { orderService } from "../../services";
 import { productActions } from "../../redux";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { app } from "../../fireBase";
 
 const Product = () => {
   const { productId } = useParams();
-  
-  const { isFetching, products} = useSelector((state) => state.productReducer);
-  const product = products.filter(item=> item._id === productId) 
+
+  const { isFetching, products } = useSelector((state) => state.productReducer);
+  const product = products.filter((item) => item._id === productId);
 
   const [productForUpdate, setProductForUpdate] = useState({});
-  const dispatch = useDispatch(); 
+  const [picture, setPicture] = useState(null);
+  const [isPictureDownload, setIsPictureDownload] = useState(false);
+
+  const dispatch = useDispatch();
   const [pStats, setPStats] = useState([]);
 
   const MONTHS = useMemo(
@@ -37,10 +47,8 @@ const Product = () => {
   useEffect(() => {
     const getOrderStats = async () => {
       try {
-        // dispatch(orderActions.getOrderStats())
         const res = await orderService.getOrdersStats(productId);
         const data = res.data.sort((a, b) => a._id - b._id);
-        // console.log(data,"LOL");
         data.map((item) =>
           setPStats((prev) => [
             ...prev,
@@ -52,15 +60,61 @@ const Product = () => {
       }
     };
     getOrderStats();
-  }, [productId,MONTHS]);
+  }, [productId, MONTHS]);
 
-  useEffect(() => {   
-    dispatch(productActions.updateProductById({ productId, productForUpdate }));    
+  useEffect(() => {
+    if (picture) {
+      const fileName = new Date().getTime() + picture.name;
+      const storage = getStorage(app);
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, picture);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          setIsPictureDownload(!isPictureDownload)
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+            default:
+          }
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            const newProduct = { ...productForUpdate, img: downloadURL};           
+            dispatch(productActions.updateProductById({ productId, productForUpdate:newProduct }));
+            setIsPictureDownload(!isPictureDownload)
+          });
+        },
+      );
+      
+    } else {
+      dispatch(productActions.updateProductById({ productId, productForUpdate }));      
+    }
   }, [productForUpdate]);
 
   const getProductData = (data) => {
-    // console.log(data, "data from child");
-    setProductForUpdate(data);
+    // console.log(data.picture);
+    if (data.picture) {
+      setPicture(data.picture[0]);
+      setProductForUpdate(data);
+    } else {
+      setProductForUpdate(data);
+    }
   };
 
   return (
@@ -98,7 +152,7 @@ const Product = () => {
           </div>
         </div>
       </div>
-      {isFetching ? (
+      {(isFetching ) ? (
         <h3>Loading...</h3>
       ) : (
         <ProductForm product={product[0]} getProductData={getProductData} />
