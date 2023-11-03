@@ -11,6 +11,7 @@ const uploadPicture = (picture) => {
   const storage = getStorage(app);
   const storageRef = ref(storage, fileName);
   const uploadTask = uploadBytesResumable(storageRef, picture);
+  console.log(uploadTask,"WOW");
 
   uploadTask.on(
     "state_changed",
@@ -33,15 +34,12 @@ const uploadPicture = (picture) => {
       // Handle unsuccessful uploads
     },
     () => {
-      // Handle successful uploads on complete
-      // For instance, get the download URL: https://firebasestorage.googleapis.com/...
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
         console.log(downloadURL,'my url');
         return downloadURL
       });
     },
-  );
-
+  )
 };
 
 export { uploadPicture };

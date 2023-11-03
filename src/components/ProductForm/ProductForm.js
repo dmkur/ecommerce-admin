@@ -55,7 +55,7 @@ const ProductForm = ({ product, getProductData}) => {
             {...register("desc")}
           />
 
-          <label>In Stock</label>
+          <label>In Stock - {product.inStock ? "Yes" : "No"}</label>
           <select id="idStock" {...register("inStock")}>
             <option value="">Choose option</option>
             <option value="true">Yes</option>
