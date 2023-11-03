@@ -31,31 +31,31 @@ const ProductForm = ({ product, getProductData}) => {
           <label>Product Name</label>
           <input
             type="text"
-            placeholder={product.title}
+            placeholder={(product?.title || "Shirt")}
             {...register("title")}
           />
           <label>Price</label>
           <input
-            type="text"
-            placeholder={product.price}
+            type="number"
+            placeholder={product?.price || "33"}
             {...register("price")}
           />
           <label>Color</label>
           <input
             type="text"
-            placeholder={product.color}
+            placeholder={product?.color || "white"}
             {...register("color")}
           />
 
           <label>Product Desc</label>
           <input
             type="text"
-            placeholder={product.desc}
+            placeholder={product?.desc || "description"}
             name={"desc"}
             {...register("desc")}
           />
 
-          <label>In Stock - {product.inStock ? "Yes" : "No"}</label>
+          <label>In Stock - {product?.inStock ? "Yes" : "No"}</label>
           <select id="idStock" {...register("inStock")}>
             <option value="">Choose option</option>
             <option value="true">Yes</option>
@@ -66,15 +66,15 @@ const ProductForm = ({ product, getProductData}) => {
           <label>Categories</label>
           <input
             type="text"
-            placeholder={product.categories}
+            placeholder={product?.categories || "man,shirt"}
             {...register("categories")}
           />
           <label>Size</label>
-          <input type="text" placeholder={product.size} {...register("size")} />
+          <input type="text" placeholder={product?.size ||"L,S,M"} {...register("size")} />
         </div>
         <div className="productFormRight">
           <div className="productUpload">
-            <img src={product.img} alt="" className="productUploadImg" />
+            <img src={product?.img || "download img"} alt="picture of product" className="productUploadImg" />
             <label htmlFor="file">
               <Publish />
             </label>
@@ -86,7 +86,7 @@ const ProductForm = ({ product, getProductData}) => {
             />
           </div>
 
-          <button className="productButton">Update</button>
+          <button className="productButton">{product ? "Update": "Create"}</button>
         </div>
       </form>
     </div>
