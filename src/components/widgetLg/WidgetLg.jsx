@@ -38,7 +38,8 @@ const WidgetLg = () => {
                 <span className="widgetLgName">{order.userId}</span>
               </td>
               <td className="widgetLgDate">{moment().from(order.createdAt)}</td>
-              <td className="widgetLgAmount">{order.amount}</td>
+
+              <td className="widgetLgAmount">{order.amount / 100}</td>
               <td className="widgetLgStatus">
                 <Button type={order.status} />
               </td>
