@@ -9,7 +9,7 @@ const WidgetLg = () => {
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const { data } = await orderService.getOrders();
+        const { data } = await orderService.getOrders();       
         setOrders(data);
       } catch (e) {}
     };
@@ -38,7 +38,6 @@ const WidgetLg = () => {
                 <span className="widgetLgName">{order.userId}</span>
               </td>
               <td className="widgetLgDate">{moment().from(order.createdAt)}</td>
-
               <td className="widgetLgAmount">{order.amount}</td>
               <td className="widgetLgStatus">
                 <Button type={order.status} />
