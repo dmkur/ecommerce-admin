@@ -9,8 +9,12 @@ const WidgetLg = () => {
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const { data } = await orderService.getOrders();       
-        setOrders(data);
+        const { data } = await orderService.getOrders();
+        const res = data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
+
+        setOrders(res);
       } catch (e) {}
     };
     getOrders();
@@ -31,21 +35,24 @@ const WidgetLg = () => {
             <th className="widgetLgTh">Status</th>
           </tr>
         </tbody>
-        {orders.map((order) => (
-          <tbody key={order._id}>
-            <tr className="widgetLgTr">
-              <td className="widgetLgUser">
-                <span className="widgetLgName">{order.userId}</span>
-              </td>
-              <td className="widgetLgDate">{moment().from(order.createdAt)}</td>
+        {orders &&
+          orders.map((order) => (
+            <tbody key={order._id}>
+              <tr className="widgetLgTr">
+                <td className="widgetLgUser">
+                  <span className="widgetLgName">{order.userId}</span>
+                </td>
+                <td className="widgetLgDate">
+                  {moment().from(order.createdAt)}
+                </td>
 
-              <td className="widgetLgAmount">{order.amount / 100}</td>
-              <td className="widgetLgStatus">
-                <Button type={order.status} />
-              </td>
-            </tr>
-          </tbody>
-        ))}
+                <td className="widgetLgAmount">{order.amount / 100}</td>
+                <td className="widgetLgStatus">
+                  <Button type={order.status} />
+                </td>
+              </tr>
+            </tbody>
+          ))}
       </table>
     </div>
   );
