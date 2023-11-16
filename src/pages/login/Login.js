@@ -12,9 +12,9 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleClick = async(e) => {
+  const handleClick = (e) => {
     e.preventDefault();
-    const { error:axiosError } =  dispatch(authActions.login({ username, password }));
+    dispatch(authActions.login({ username, password }));
   };
 
   useEffect(()=>{
