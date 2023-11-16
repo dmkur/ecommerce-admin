@@ -25,6 +25,7 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.currentUser = null;
+      authService.deleteTokens()
       state.error=null
     },
   },
@@ -35,6 +36,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.currentUser = action.payload;
+        authService.setTokens(action.payload.accessToken)
         state.isFetching = false;
         state.error = null;
       })
