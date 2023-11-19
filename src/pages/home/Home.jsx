@@ -28,8 +28,7 @@ const Home = () => {
     [],
   );
   useEffect(() => {
-    const getStats = async () => {
-      console.log("START USEEFFECT");
+    const getStats = async () => {     
       try {
         const { data } = await userService.getUsersStats();       
         data

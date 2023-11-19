@@ -1,5 +1,4 @@
 import "./newProduct.css";
-import { useState } from "react";
 import {
   getStorage,
   ref,
@@ -9,92 +8,70 @@ import {
 import { app } from "../../fireBase";
 import { productActions } from "../../redux";
 import { useDispatch } from "react-redux";
+import { ProductForm } from "../../components";
 
 const NewProduct = () => {
-  const [input, setInput] = useState({});
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [previewImage, setPreviewImage] = useState("");
-
-  const [file, setFile] = useState(null);
-  console.log(file);
-  const [cat, setCat] = useState([]);
-  // console.log(cat);
   const dispatch = useDispatch();
 
-  const handleChange = (e) => {
-    setInput((prev) => {
-      return { ...prev, [e.target.name]: e.target.value };
-    });
-  };
+  const getProductData = (data) => {
+    if (data.picture) {
+      const fileName = new Date().getTime() + data.picture[0].name;
+      const storage = getStorage(app);
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, data.picture[0]);
 
-  const handleCategories = (e) => {
-    setCat(e.target.value.split(","));
-  };
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    const fileName = new Date().getTime() + file.name;
-    const storage = getStorage(app);
-    const storageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-          default:
-        }
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-      },
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          const newProduct = { ...input, img: downloadURL, categories: cat };          
-          dispatch(productActions.createProduct(newProduct));
-        });
-      },
-    );
-  
-        
-  };
-
-  const setUpImg = (e) => {
-    const file = e.target.files[0];
-    setFile(file);
-    setSelectedImage(file);
-    setPreviewImage(URL.createObjectURL(file));
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+            default:
+          }
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            const newProduct = { ...data, img: downloadURL };
+            dispatch(productActions.createProduct(newProduct));
+            // console.log(newProduct,"SOP");
+          });
+        },
+      );
+    } else {
+      dispatch(productActions.createProduct({ newProduct: data }));
+      // console.log(data,"SOP2");
+    }
   };
 
   return (
     <div className="newProduct">
-      <h1 className="addProductTitle">New Product</h1>
+      {/* <h1 className="addProductTitle">New Product</h1>
       <form className="addProductForm">
         <div className="addProductItem">
-         <div > 
-          <label>Image</label>
-          <input
-            type="file"
-            id="file"            
-            onChange={setUpImg}
-          />
+          <div>
+            <label>Image</label>
+            <input type="file" id="file" onChange={setUpImg} />
           </div>
-          {previewImage && <div className="imgStyle">
-             <img src={previewImage} alt="Selected"/>
-          </div>}
+          {previewImage && (
+            <div className="imgStyle">
+              <img src={previewImage} alt="Selected" />
+            </div>
+          )}
         </div>
         <div className="addProductItem">
           <label>Title</label>
@@ -152,6 +129,8 @@ const NewProduct = () => {
           Create
         </button>
       </form>
+       */}
+      <ProductForm getProductData={getProductData} />
     </div>
   );
 };

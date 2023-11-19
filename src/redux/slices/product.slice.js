@@ -4,7 +4,8 @@ import {productService} from "../../services";
 const initialState = {
     products: [],
     isFetching: false,
-    error: null
+    error: null,
+    productForUpdate: null,
 }
 
 const createProduct = createAsyncThunk(
@@ -34,9 +35,9 @@ const getAllProducts = createAsyncThunk(
 
 const updateProductById = createAsyncThunk(
     'productSlice/updateProductById',
-    async ({id, dataForUpdate}, {rejectWithValue}) => {
+    async ({productId, productForUpdate}, {rejectWithValue}) => {
         try {
-            const {data} = await productService.updateById(id, dataForUpdate);
+            const {data} = await productService.updateById(productId, productForUpdate);
             return data
         } catch (e) {
             return rejectWithValue(e.response.data)
@@ -59,7 +60,11 @@ const deleteProductById = createAsyncThunk(
 const productSlice = createSlice({
     name: "productSlice",
     initialState,
-    reducers: {},
+    reducers: {
+        setProductData: (state, action)=>{            
+                state.productForUpdate = action.payload
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(createProduct.fulfilled, (state, action) => {
@@ -79,8 +84,10 @@ const productSlice = createSlice({
             .addCase(updateProductById.fulfilled, (state, action) => {
                 const index = state.products.findIndex(item => item._id === action.payload._id);
                 state.products[index] = action.payload
+                state.productForUpdate = null
 
                 state.isFetching = false
+                
             })
             .addCase(updateProductById.pending, (state) => {
                 state.isFetching = true
@@ -108,14 +115,14 @@ const productSlice = createSlice({
     }
 });
 
-const {reducer: productReducer} = productSlice;
+const {reducer: productReducer, actions:{setProductData}} = productSlice;
 
 const productActions = {
     getAllProducts,
     deleteProductById,
     createProduct,
     updateProductById,
-
+    setProductData
 }
 
 

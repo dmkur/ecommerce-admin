@@ -1,10 +1,9 @@
 import "./product.css";
 import {Link, useParams} from "react-router-dom";
-import {Chart} from "../../components";
-import {Publish} from "@mui/icons-material";
+import {Chart, ProductForm} from "../../components";
 import {useSelector, useDispatch} from "react-redux";
 import {useEffect, useMemo, useState} from "react";
-import {orderService} from "../../services";
+import {orderService, uploadPicture} from "../../services";
 import {productActions} from "../../redux";
 import {
     getStorage,
@@ -15,18 +14,16 @@ import {
 import {app} from "../../fireBase";
 
 const Product = () => {
-    const {isFetching} = useSelector(state => state.productReducer);
-    const [inputs, setInputs] = useState({});
-    const [additionalParams, setAdditionalParams] = useState([]);
-    const [file, setFile] = useState(null);
+    const {productId} = useParams();
 
-    const dispatch = useDispatch()
-    const {productId} = useParams()
+    const {isFetching, products} = useSelector((state) => state.productReducer);
+    const product = products.filter((item) => item._id === productId);
 
-    const product = useSelector((state) =>
-        state.productReducer.products.filter((item) => item._id === productId),
-    );
+    const [productForUpdate, setProductForUpdate] = useState({});
+    const [picture, setPicture] = useState(null);
+    const [isPictureDownload, setIsPictureDownload] = useState(false);
 
+    const dispatch = useDispatch();
     const [pStats, setPStats] = useState([]);
 
     const MONTHS = useMemo(
@@ -55,7 +52,7 @@ const Product = () => {
                 data.map((item) =>
                     setPStats((prev) => [
                         ...prev,
-                        {name: MONTHS[item._id - 1], Sales: item.total},
+                        {name: MONTHS[item._id - 1], Sales: item.total / 100},
                     ]),
                 );
             } catch (e) {
@@ -65,63 +62,67 @@ const Product = () => {
         getOrderStats();
     }, [productId, MONTHS]);
 
-    const handleClick = (e) => {
-        e.preventDefault()
-        const updatedObj = {...inputs, ...additionalParams}
-        dispatch(productActions.updateProductById({id: productId, dataForUpdate: updatedObj}))
+    useEffect(() => {
+        if (picture) {
+            const fileName = new Date().getTime() + picture.name;
+            const storage = getStorage(app);
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, picture);
 
-        // const fileName = new Date().getTime() + file.name;
-        // const storage = getStorage(app);
-        // const storageRef = ref(storage, fileName);
-        // const uploadTask = uploadBytesResumable(storageRef, file);
-        // uploadTask.on(
-        //     "state_changed",
-        //     (snapshot) => {
-        //         // Observe state change events such as progress, pause, and resume
-        //         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        //         const progress =
-        //             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        //         console.log("Upload is " + progress + "% done");
-        //         switch (snapshot.state) {
-        //             case "paused":
-        //                 console.log("Upload is paused");
-        //                 break;
-        //             case "running":
-        //                 console.log("Upload is running");
-        //                 break;
-        //             default:
-        //         }
-        //     },
-        //     (error) => {
-        //         // Handle unsuccessful uploads
-        //     },
-        //     () => {
-        //         // Handle successful uploads on complete
-        //         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        //             const newProduct = { ...input, img: downloadURL, categories: cat };
-        //             dispatch(productActions.createProduct(newProduct));
-        //         });
-        //     },
-        // );
-    };
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    setIsPictureDownload(!isPictureDownload);
+                    const progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log("Upload is " + progress + "% done");
+                    switch (snapshot.state) {
+                        case "paused":
+                            console.log("Upload is paused");
+                            break;
+                        case "running":
+                            console.log("Upload is running");
+                            break;
+                        default:
+                    }
+                },
+                (error) => {
+                    // Handle unsuccessful uploads
+                },
+                () => {
+                    // Handle successful uploads on complete
+                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        const newProduct = {...productForUpdate, img: downloadURL};
+                        dispatch(
+                            productActions.updateProductById({
+                                productId,
+                                productForUpdate: newProduct,
+                            }),
+                        );
+                        setIsPictureDownload(!isPictureDownload);
+                    });
+                },
+            );
 
-    const handleChange = (e) => {
-        setInputs((prev) => {
-            return {...prev, [e.target.name]: e.target.value};
-        });
-    };
+            // uploadPicture(picture)
+            //  don`t know how to seperate upload this func
+        } else {
+            dispatch(
+                productActions.updateProductById({productId, productForUpdate}),
+            );
+        }
+    }, [productForUpdate]);
 
-    const handleCategory = (e) => {
-
-        setAdditionalParams((prev) => {
-            const value = e.target.value.split(",")
-            return {...prev, [e.target.name]: value}
-        })
-    }
-
-    const setImg = (e) => {
-        setFile(e.target.files[0]);
+    const getProductData = (data) => {
+        if (data.picture) {
+            setPicture(data.picture[0]);
+            setProductForUpdate(data);
+        } else {
+            setProductForUpdate(data);
+        }
     };
 
     return (
@@ -159,72 +160,11 @@ const Product = () => {
                     </div>
                 </div>
             </div>
-            <div className="productBottom">
-                {isFetching ? <h3>Updating...</h3> : <form className="productForm">
-                    <div className="productFormLeft">
-                        <label>Product Name</label>
-                        <input
-                            type="text"
-                            placeholder={product[0].title}
-                            name={"title"}
-                            onChange={handleChange}
-                        />
-                        <label>Price</label>
-                        <input
-                            type="text"
-                            placeholder={product[0].price}
-                            name={"price"}
-                            onChange={handleChange}
-                        />
-                        <label>Color</label>
-                        <input
-                            type="text"
-                            placeholder={product[0].color}
-                            name={"color"}
-                            onChange={handleChange}
-                        />
-                        <label>Size</label>
-                        <input
-                            type="text"
-                            placeholder={product[0].size}
-                            name={"size"}
-                            onChange={handleCategory}
-                        />
-                        <label>Product Desc</label>
-                        <input
-                            type="text"
-                            placeholder={product[0].desc}
-                            name={"desc"}
-                            onChange={handleChange}
-                        />
-                        <label>Categories</label>
-                        <input
-                            type="text"
-                            placeholder={product[0].categories}
-                            name={"categories"}
-                            onChange={handleCategory}
-                        />
-
-                        <label>In Stock</label>
-                        <select name="inStock" id="idStock" onChange={handleChange}>
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
-                    <div className="productFormRight">
-                        <div className="productUpload">
-                            <img src={product[0].img} alt="" className="productUploadImg"/>
-                            <label htmlFor="file">
-                                <Publish/>
-                            </label>
-                            <input type="file" id="file" style={{display: "none"}} onChange={setImg}/>
-                        </div>
-                        <button className="productButton" onClick={handleClick}>
-                            Update
-                        </button>
-                    </div>
-                </form>}
-            </div>
+            {isFetching ? (
+                <h3>Loading...</h3>
+            ) : (
+                <ProductForm product={product[0]} getProductData={getProductData}/>
+            )}
         </div>
     );
 };
