@@ -36,7 +36,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.currentUser = action.payload;
-        authService.setTokens(action.payload.accessToken)
+        authService.setTokens(action.payload.access_token)
         state.isFetching = false;
         state.error = null;
       })
