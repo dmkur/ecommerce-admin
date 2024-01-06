@@ -3,10 +3,20 @@ import { DataGrid } from "@mui/x-data-grid";
 import { DeleteOutline } from "@mui/icons-material";
 import { userRows } from "../../dummyData";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../redux";
 
 const UserList = () => {
+  const { users } = useSelector((state) => state.userReducer);
+  console.log(users, "USERS list");
   const [data, setData] = useState(userRows);
+  // const [users, setUsers] = useState([]);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // dispatch(userActions.getAllUsers());
+  }, []);
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
