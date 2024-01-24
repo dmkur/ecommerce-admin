@@ -1,20 +1,17 @@
-import { createRoot } from "react-dom/client";
-import { App } from "./App";
+import ReactDOM from 'react-dom/client'
+import {App} from './App.jsx'
 
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter } from "react-router-dom";
 
-const rootElement = document.getElementById("root");
-const root = createRoot(rootElement);
-
-root.render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <PersistGate loading={null} persistor={persistor}>
     <Provider store={store}>
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <BrowserRouter>
         <App />
       </BrowserRouter>
     </Provider>
-  </PersistGate>,
-);
+  </PersistGate>
+)
