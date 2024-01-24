@@ -45,7 +45,8 @@ const Home = () => {
   }, [MONTHS,user]);
 
   return (
-    <div className="home">
+    // <div className="home">
+    <div className="grow">
       <FeaturedInfo />
       <Chart
         data={userStats}
@@ -53,7 +54,7 @@ const Home = () => {
         grid
         dataKey="Active User"
       />
-      <div className="homeWidgets">
+      <div className="flex m-5">
         <WidgetSm />
         <WidgetLg />
       </div>

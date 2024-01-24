@@ -1,8 +1,12 @@
-.home{
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* .home{
     flex: 4;
 }
 
 .homeWidgets{
     display: flex;
     margin: 20px;
-}
+} */
